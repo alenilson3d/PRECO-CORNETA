@@ -1,128 +1,996 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle | AS SOUND</title>
-    <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>AS SOUND | Catálogo e Gerador de PDF</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2pdf.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#09090b',
+                            800: '#121214',
+                            700: '#18181b',
+                            600: '#27272a',
+                            500: '#3f3f46'
+                        },
+                        brand: {
+                            500: '#f97316',
+                            600: '#ea580c',
+                            400: '#fb923c'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121214;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-dark-900 text-zinc-100 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-    <div class="admin-wrapper">
-        <main class="admin-main">
-            <header class="admin-header">
-                <div class="header-title-box">
-                    <h1>AS SOUND | Gestão do Catálogo</h1>
-                    <p>Cadastre categorias, produtos e banners em tempo real na sua vitrine.</p>
+    <!-- Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-dark-900/80 border-b border-dark-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-amber-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i data-lucide="box" class="w-6 h-6 text-white"></i>
                 </div>
-                <a href="index.html" class="btn-back-vitrine"><i class="fas fa-arrow-left"></i> Voltar para a Vitrine</a>
-            </header>
-
-            <div class="admin-grid">
-                <section class="admin-forms-column">
-                    
-                    <div class="admin-card" style="border-left: 4px solid var(--brand-blue);">
-                        <div class="card-header">
-                            <h3><i class="fas fa-images"></i> Links dos Banners do Carrossel</h3>
-                        </div>
-                        <form id="form-cadastro-banners" class="admin-form">
-                            <div class="form-group">
-                                <label for="adm-banner1">Link do Banner 1 (Internet URL)</label>
-                                <input type="url" id="adm-banner1" placeholder="https://site.com/banner1.jpg" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="adm-banner2">Link do Banner 2 (Internet URL)</label>
-                                <input type="url" id="adm-banner2" placeholder="https://site.com/banner2.jpg" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="adm-banner3">Link do Banner 3 (Internet URL)</label>
-                                <input type="url" id="adm-banner3" placeholder="https://site.com/banner3.jpg" required>
-                            </div>
-                            <button type="submit" class="btn-submit" style="background-color: var(--brand-blue);"><i class="fas fa-sync-alt"></i> Atualizar Banners</button>
-                        </form>
-                    </div>
-                    
-                    <div class="admin-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-folder-plus"></i> Nova Categoria</h3>
-                        </div>
-                        <form id="form-cadastro-categoria" class="admin-form">
-                            <div class="form-group">
-                                <label for="adm-nova-categoria-nome">Nome da Categoria</label>
-                                <input type="text" id="adm-nova-categoria-nome" placeholder="Ex: Subwoofers, Amplificadores" required>
-                            </div>
-                            <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> Criar Categoria</button>
-                        </form>
-                    </div>
-
-                    <div class="admin-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-plus-circle"></i> Novo Componente / Produto</h3>
-                        </div>
-                        <form id="form-cadastro-produto" class="admin-form">
-                            <div class="form-group">
-                                <label for="adm-nome">Nome do Produto</label>
-                                <input type="text" id="adm-nome" placeholder="Ex: Subwoofer Pioneer 12 400w RMS" required>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="adm-preco">Preço (R$)</label>
-                                    <input type="number" id="adm-preco" step="0.01" placeholder="0.00" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="adm-categoria">Categoria Vínculo</label>
-                                    <select id="adm-categoria" required>
-                                        </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="adm-descricao">Especificações Técnicas / Descrição</label>
-                                <textarea id="adm-descricao" rows="4" placeholder="Detalhes do produto, potência, dimensões..." required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-images"></i> Links das Imagens do Produto (Até 3)</label>
-                                <input type="url" id="adm-img1" placeholder="URL da Imagem Principal (Obrigatória)" style="margin-bottom: 8px;" required>
-                                <input type="url" id="adm-img2" placeholder="URL da Imagem 2 (Opcional)" style="margin-bottom: 8px;">
-                                <input type="url" id="adm-img3" placeholder="URL da Imagem 3 (Opcional)">
-                            </div>
-
-                            <button type="submit" class="btn-submit btn-product"><i class="fas fa-save"></i> Publicar na Vitrine</button>
-                        </form>
-                    </div>
-
-                </section>
-
-                <section class="admin-tables-column">
-                    
-                    <div class="admin-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-list"></i> Produtos Cadastrados</h3>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="admin-table">
-                               <thead>
-                                   <tr>
-                                       <th>Produto</th>
-                                       <th>Categoria</th>
-                                       <th>Preço</th>
-                                       <th style="text-align: center;">Ações</th>
-                                   </tr>
-                               </thead>
-                               <tbody id="adm-lista-produtos">
-                                   </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </section>
+                <div>
+                    <h1 class="font-black tracking-wider text-lg sm:text-xl text-white flex items-center gap-2">
+                        AS <span class="text-brand-500">SOUND</span>
+                    </h1>
+                    <p class="text-xs text-zinc-400 font-medium">Catálogo Oficial & Gerador de PDF</p>
+                </div>
             </div>
-        </main>
+
+            <div class="flex items-center space-x-3">
+                <button id="modeToggleBtn" onclick="toggleBusinessMode()" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 border border-dark-500 bg-dark-700 text-zinc-300 hover:border-brand-500 flex items-center gap-2">
+                    <i data-lucide="user" class="w-4 h-4 text-brand-500" id="modeIcon"></i>
+                    <span id="modeText">Consumidor Final</span>
+                </button>
+
+                <button onclick="openAdminModal()" class="p-2.5 rounded-xl bg-dark-700 hover:bg-dark-600 border border-dark-500 text-zinc-300 hover:text-white transition-all shadow-sm hover:border-brand-500" title="Configurações e Painel Admin">
+                    <i data-lucide="settings" class="w-5 h-5 text-brand-500"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Banner / Hero Section -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-dark-800 via-dark-700 to-dark-800 border border-dark-600 p-8 sm:p-10 shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-2xl space-y-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                    <i data-lucide="zap" class="w-3.5 h-3.5"></i> Alta Performance em Som Automotivo
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+                    Tecnologia e Precisão em Impressão 3D para Som Automotivo
+                </h2>
+                <p class="text-sm sm:text-base text-zinc-400 leading-relaxed">
+                    Escolha seus modelos, configure as quantidades e gere arquivos PDF profissionais instantaneamente com cálculo automático de descontos, embalagem e frete.
+                </p>
+            </div>
+        </section>
+
+        <!-- Product Grid & Calculator Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Vitrine de Produtos -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="grid" class="w-5 h-5 text-brand-500"></i> Vitrine de Modelos
+                    </h3>
+                    <span class="text-xs text-zinc-400">Clique em um produto para adicionar ao orçamento</span>
+                </div>
+
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- Carrinho / Configurador de Orçamento -->
+            <div class="lg:col-span-5">
+                <div class="sticky top-28 bg-dark-800 border border-dark-600 rounded-3xl p-6 shadow-2xl space-y-6">
+                    <div class="flex items-center justify-between border-b border-dark-600 pb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="calculator" class="w-5 h-5 text-brand-500"></i> Montar Orçamento
+                        </h3>
+                        <button onclick="clearCart()" class="text-xs text-zinc-400 hover:text-red-400 transition-colors flex items-center gap-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Limpar
+                        </button>
+                    </div>
+
+                    <div id="cartItemsList" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                        <div class="text-center py-8 text-zinc-500 text-sm">
+                            Nenhum modelo selecionado.<br>Clique nos cards ao lado para adicionar.
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t border-dark-600">
+                        <div>
+                            <label class="block text-xs font-semibold text-zinc-400 mb-1.5 flex items-center gap-1">
+                                <i data-lucide="package" class="w-3.5 h-3.5 text-brand-500"></i> Tipo de Embalagem
+                            </label>
+                            <select id="packagingSelect" onchange="calculateTotal()" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500 transition-colors">
+                            </select>
+                        </div>
+
+                        <!-- Campo de Frete -->
+                        <div>
+                            <label class="block text-xs font-semibold text-zinc-400 mb-1.5 flex items-center gap-1">
+                                <i data-lucide="truck" class="w-3.5 h-3.5 text-brand-500"></i> Valor do Frete (R$)
+                            </label>
+                            <input type="number" id="shippingValue" value="0" min="0" step="0.01" oninput="calculateTotal()" placeholder="0.00" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500 transition-colors">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-zinc-400 mb-1.5 flex items-center gap-1">
+                                    <i data-lucide="tag" class="w-3.5 h-3.5 text-brand-500"></i> Desconto Extra
+                                </label>
+                                <input type="number" id="discountValue" value="0" min="0" step="0.01" oninput="calculateTotal()" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Tipo Desconto</label>
+                                <select id="discountType" onchange="calculateTotal()" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500 transition-colors">
+                                    <option value="percent" selected>% (Porcentagem)</option>
+                                    <option value="fixed">R$ (Reais)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-zinc-400 mb-1.5 flex items-center gap-1">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-brand-500"></i> Nome do Cliente / Detalhes
+                            </label>
+                            <input type="text" id="clientNameInput" placeholder="Ex: Cliente João" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500 transition-colors">
+                        </div>
+                    </div>
+
+                    <div class="bg-dark-700/50 rounded-2xl p-4 space-y-2 border border-dark-600">
+                        <div class="flex justify-between text-xs text-zinc-400">
+                            <span>Subtotal:</span>
+                            <span id="subtotalDisplay">R$ 0,00</span>
+                        </div>
+                        <div id="discountRow" class="flex justify-between text-xs text-brand-400 hidden">
+                            <span>Desconto Aplicado:</span>
+                            <span id="discountDisplay">- R$ 0,00</span>
+                        </div>
+                        <div id="resellerDiscountRow" class="flex justify-between text-xs text-amber-400 hidden">
+                            <span>Desconto Revenda (<span id="resellerPercentLabel">0</span>%):</span>
+                            <span id="resellerDiscountDisplay">- R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-zinc-400">
+                            <span>Embalagem:</span>
+                            <span id="packagingDisplay">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-zinc-400">
+                            <span>Frete:</span>
+                            <span id="shippingDisplay">R$ 0,00</span>
+                        </div>
+                        <div class="pt-2 border-t border-dark-600 flex justify-between items-center">
+                            <span class="text-sm font-bold text-white">Total do Orçamento:</span>
+                            <span class="text-lg font-extrabold text-brand-500" id="totalDisplay">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Baixar PDF -->
+                    <button onclick="downloadPDFQuote()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 transition-all transform active:scale-[0.98]">
+                        <i data-lucide="file-down" class="w-5 h-5"></i> Baixar Orçamento em PDF
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Elemento Oculto Formatado Exatamente com o Padrão Desejado para o PDF -->
+    <div style="display: none;">
+        <div id="pdfTemplate" style="background: #ffffff; color: #1a1a1a; font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 700px;">
+
+            <!-- Cabeçalho de marca -->
+            <div style="background: linear-gradient(135deg, #ea580c, #f97316); padding: 26px 32px; color: #ffffff;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <div style="font-size: 24px; font-weight: 900; letter-spacing: 1px;">AS SOUND</div>
+                        <div style="font-size: 11px; opacity: 0.92; margin-top: 3px;">Som Automotivo • Caixas • Instalação • Projetos 3D</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 17px; font-weight: 800; letter-spacing: 1.5px;">ORÇAMENTO</div>
+                        <div id="pdfDocNumber" style="font-size: 11px; opacity: 0.92; margin-top: 3px;">Nº 000001</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corpo -->
+            <div style="padding: 28px 32px;">
+
+                <!-- Dados do cliente / data -->
+                <div style="display: flex; justify-content: space-between; gap: 20px; padding-bottom: 16px; margin-bottom: 20px; border-bottom: 1px solid #e5e5e5;">
+                    <div>
+                        <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #999; font-weight: 700; margin-bottom: 4px;">Cliente</div>
+                        <div id="pdfClientRow" style="font-size: 13px; font-weight: 700;">Consumidor Final</div>
+                        <div id="pdfModalityRow" style="font-size: 10.5px; color: #ea580c; font-weight: 700; margin-top: 2px;"></div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #999; font-weight: 700; margin-bottom: 4px;">Data</div>
+                        <div id="pdfDateRow" style="font-size: 13px; font-weight: 700;">13/09/2026</div>
+                    </div>
+                </div>
+
+                <!-- Tabela de produtos -->
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 20px;" cellspacing="0">
+                    <thead>
+                        <tr style="background: #18181b; color: #ffffff;">
+                            <th style="text-align: center; padding: 9px 6px; font-weight: 700; border-radius: 6px 0 0 0;">Qtd</th>
+                            <th style="text-align: left; padding: 9px 6px; font-weight: 700;">Produto</th>
+                            <th style="text-align: left; padding: 9px 6px; font-weight: 700;">Especificações</th>
+                            <th style="text-align: right; padding: 9px 6px; font-weight: 700;">Unit.</th>
+                            <th style="text-align: right; padding: 9px 6px; font-weight: 700; border-radius: 0 6px 0 0;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdfProductsBody">
+                        <!-- Linhas injetadas dinamicamente -->
+                    </tbody>
+                </table>
+
+                <!-- Resumo / totais -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 22px; page-break-inside: avoid; break-inside: avoid;">
+                    <div style="width: 290px; page-break-inside: avoid; break-inside: avoid;">
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: #444;">
+                            <span>Subtotal</span><span id="pdfSubtotalRow">R$ 0,00</span>
+                        </div>
+                        <div id="pdfDiscountRow" style="display: none; justify-content: space-between; padding: 4px 0; font-size: 12px; color: #ea580c;">
+                            <span>Desconto</span><span id="pdfDiscountValue">- R$ 0,00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: #444;">
+                            <span>Embalagem</span><span id="pdfPackagingRow">Inclusa</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: #444;">
+                            <span>Frete</span><span id="pdfShippingRow">R$ 0,00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding: 12px 16px; background: #18181b; border-radius: 8px;">
+                            <span style="font-size: 12px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">VALOR TOTAL</span>
+                            <span id="pdfTotalValue" style="font-size: 17px; font-weight: 900; color: #f97316;">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div style="background: #fafafa; border: 1px solid #eeeeee; border-radius: 8px; padding: 12px 16px; page-break-inside: avoid; break-inside: avoid;">
+                    <div style="font-size: 11px; font-weight: 700; margin-bottom: 4px;">Observações</div>
+                    <div style="font-size: 10.5px; color: #555;">• Produto fabricado sob demanda.</div>
+                    <div style="font-size: 10.5px; color: #555;">• Prazo de produção e envio conforme combinado.</div>
+                    <div style="font-size: 10.5px; color: #555;">• Orçamento válido por 7 dias a partir da data de emissão.</div>
+                </div>
+            </div>
+
+            <!-- Rodapé -->
+            <div style="background: #f4f4f5; padding: 16px 32px; border-top: 3px solid #ea580c; text-align: center; page-break-inside: avoid; break-inside: avoid;">
+                <div style="font-size: 11.5px; font-weight: 800; color: #18181b;">AS SOUND</div>
+                <div style="font-size: 9.5px; color: #666; margin-top: 2px;">Som Automotivo • Caixas • Instalação • Projetos 3D</div>
+                <div style="font-size: 9.5px; font-weight: 700; color: #ea580c; margin-top: 2px;">Tecnologia e precisão em cada projeto.</div>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Modal Painel Administrativo -->
+    <div id="adminModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden my-auto">
+            
+            <div class="p-6 border-b border-dark-600 flex items-center justify-between bg-dark-700/50">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="settings" class="w-5 h-5 text-brand-500"></i> Painel de Controle
+                    </h3>
+                    <p class="text-xs text-zinc-400">Gerenciamento de Modelos, Preços e Embalagens</p>
+                </div>
+                <button onclick="closeAdminModal()" class="p-2 rounded-xl bg-dark-700 hover:bg-dark-600 text-zinc-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-8">
+                <div class="bg-dark-700/40 p-5 rounded-2xl border border-dark-600 space-y-3">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="percent" class="w-4 h-4 text-brand-500"></i> Desconto de Revenda (%)
+                    </h4>
+                    <div class="flex gap-3">
+                        <input type="number" id="settingResellerDiscount" min="0" max="100" class="bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 w-32 focus:outline-none focus:border-brand-500">
+                        <button onclick="saveResellerDiscountSetting()" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-semibold transition-colors">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i data-lucide="box" class="w-4 h-4 text-brand-500"></i> Modelos Cadastrados
+                        </h4>
+                        <button onclick="openProductModal()" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Novo Modelo
+                        </button>
+                    </div>
+
+                    <div id="adminProductsList" class="space-y-3"></div>
+                </div>
+
+                <div class="space-y-4 pt-4 border-t border-dark-600">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i data-lucide="package" class="w-4 h-4 text-brand-500"></i> Opções de Embalagem Personalizadas
+                        </h4>
+                        <button onclick="openPackagingModal()" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Nova Embalagem
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-dark-700/30 p-3.5 rounded-2xl border border-dark-600/60 opacity-80">
+                        <div class="space-y-0.5">
+                            <h5 class="font-bold text-sm text-zinc-300 flex items-center gap-2">
+                                Padrão / Sem custo adicional 
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-dark-600 text-zinc-400 font-normal">Fixo</span>
+                            </h5>
+                            <p class="text-xs text-zinc-500">Custo: R$ 0,00</p>
+                        </div>
+                    </div>
+
+                    <div id="adminPackagingList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-dark-600 bg-dark-700/50 flex justify-end">
+                <button onclick="closeAdminModal()" class="px-5 py-2.5 rounded-xl bg-dark-600 hover:bg-dark-500 text-white text-sm font-semibold transition-colors">
+                    Fechar Painel
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal de Edição/Criação de Produto -->
+    <div id="productModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="box" class="w-5 h-5 text-brand-500"></i> Adicionar/Editar Modelo
+            </h3>
+            
+            <input type="hidden" id="editProductId">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Nome do Modelo</label>
+                    <input type="text" id="prodNameInput" placeholder="Ex: Corneta AS-120" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Preço Base (R$)</label>
+                    <input type="number" id="prodPriceInput" step="0.01" placeholder="140.00" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Material</label>
+                        <select id="prodMaterialInput" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                            <option value="PETG">PETG</option>
+                            <option value="PLA">PLA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Medidas</label>
+                        <input type="text" id="prodDimensionsInput" placeholder="Ex: 12x12cm" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeProductModal()" class="px-4 py-2 rounded-xl bg-dark-700 hover:bg-dark-600 text-zinc-300 text-sm font-semibold">Cancelar</button>
+                <button onclick="saveProduct()" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold">Salvar Modelo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição/Criação de Embalagem -->
+    <div id="packagingModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-dark-800 border border-dark-600 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="package" class="w-5 h-5 text-brand-500"></i> Adicionar/Editar Embalagem
+            </h3>
+            
+            <input type="hidden" id="editPackagingId">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Nome da Embalagem</label>
+                    <input type="text" id="packNameInput" placeholder="Ex: Embalagem Reforçada" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Custo Adicional (R$)</label>
+                    <input type="number" id="packCostInput" step="0.01" placeholder="15.00" class="w-full bg-dark-700 border border-dark-500 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closePackagingModal()" class="px-4 py-2 rounded-xl bg-dark-700 hover:bg-dark-600 text-zinc-300 text-sm font-semibold">Cancelar</button>
+                <button onclick="savePackaging()" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold">Salvar Embalagem</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Application Logic -->
+    <script>
+        const defaultProducts = [
+            { id: '1', name: 'Corneta AS-115', basePrice: 35.00, material: 'PETG', dimensions: '12x12cm', icon: 'megaphone' },
+         //   { id: '2', name: 'Corneta AS-150 Curta', basePrice: 180.00, material: 'PETG', dimensions: '50x50° / 800Hz', icon: 'volume-2' },
+         //   { id: '3', name: 'Corneta AS-200 Longa Megafone', basePrice: 240.00, material: 'PETG', dimensions: '40x20° / 500Hz', icon: 'volume-x' },
+         //   { id: '4', name: 'Mini Corneta TW-Mini', basePrice: 85.00, material: 'PETG', dimensions: '60x60° / 1200Hz', icon: 'headphones' }
+        ];
+
+        const defaultPackaging = [
+            { id: 'p2', name: 'Embalagem', cost: 15.00 }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('alenilson_products')) || defaultProducts;
+        let packagingOptions = JSON.parse(localStorage.getItem('alenilson_packaging')) || defaultPackaging;
+        let resellerDiscountPercent = parseFloat(localStorage.getItem('alenilson_reseller_discount')) || 20;
+        let isResellerMode = false;
+        let cart = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            renderPackagingOptions();
+            renderCart();
+            lucide.createIcons();
+        });
+
+        function toggleBusinessMode() {
+            isResellerMode = !isResellerMode;
+            const btn = document.getElementById('modeToggleBtn');
+            const icon = document.getElementById('modeIcon');
+            const text = document.getElementById('modeText');
+
+            if (isResellerMode) {
+                btn.className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 border border-amber-500 bg-amber-500/10 text-amber-400 flex items-center gap-2 shadow-lg shadow-amber-500/10";
+                icon.setAttribute('data-lucide', 'briefcase');
+                text.textContent = `Modo Revenda (-${resellerDiscountPercent}%)`;
+            } else {
+                btn.className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 border border-dark-500 bg-dark-700 text-zinc-300 hover:border-brand-500 flex items-center gap-2";
+                icon.setAttribute('data-lucide', 'user');
+                text.textContent = "Consumidor Final";
+            }
+            lucide.createIcons();
+            renderProducts();
+            calculateTotal();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+
+            products.forEach(prod => {
+                let price = prod.basePrice;
+                if (isResellerMode) {
+                    price = price * (1 - resellerDiscountPercent / 100);
+                }
+
+                const card = document.createElement('div');
+                card.className = "bg-dark-800 border border-dark-600 hover:border-brand-500/50 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between group cursor-pointer shadow-md";
+                card.onclick = () => addToCart(prod.id);
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-dark-700 group-hover:bg-brand-500/10 flex items-center justify-center transition-colors">
+                                <i data-lucide="${prod.icon || 'box'}" class="w-5 h-5 text-brand-500"></i>
+                            </div>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-lg bg-dark-700 text-zinc-300 border border-dark-600">
+                                ${prod.material || 'PETG'}
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm sm:text-base group-hover:text-brand-400 transition-colors">${prod.name}</h4>
+                            <p class="text-xs text-zinc-400 mt-0.5">${prod.dimensions || ''}</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-dark-600/60 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-zinc-400 block">Preço Unitário</span>
+                            <span class="text-brand-500 font-extrabold text-sm sm:text-base">R$ ${price.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <span class="p-2 rounded-xl bg-dark-700 group-hover:bg-brand-500 group-hover:text-white text-zinc-300 transition-all shadow-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function renderPackagingOptions() {
+            const select = document.getElementById('packagingSelect');
+            const currentSelected = select.value;
+            select.innerHTML = '<option value="0">Padrão / Sem custo adicional</option>';
+
+            packagingOptions.forEach(pkg => {
+                const opt = document.createElement('option');
+                opt.value = pkg.cost;
+                opt.setAttribute('data-name', pkg.name);
+                opt.textContent = `${pkg.name} (+ R$ ${pkg.cost.toFixed(2).replace('.', ',')})`;
+                select.appendChild(opt);
+            });
+
+            if (currentSelected) {
+                select.value = currentSelected;
+            }
+
+            renderAdminPackagingList();
+        }
+
+        function addToCart(productId) {
+            const prod = products.find(p => p.id === productId);
+            if (!prod) return;
+
+            let price = prod.basePrice;
+            if (isResellerMode) {
+                price = price * (1 - resellerDiscountPercent / 100);
+            }
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: prod.id,
+                    name: prod.name,
+                    material: prod.material,
+                    dimensions: prod.dimensions,
+                    basePrice: prod.basePrice,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            renderCart();
+            calculateTotal();
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+            renderCart();
+            calculateTotal();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(i => i.id !== productId);
+            renderCart();
+            calculateTotal();
+        }
+
+        function clearCart() {
+            cart = [];
+            renderCart();
+            calculateTotal();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsList');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-zinc-500 text-sm">
+                        Nenhum modelo selecionado.<br>Clique nos cards ao lado para adicionar.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            cart.forEach(item => {
+                let unitPrice = item.basePrice;
+                if (isResellerMode) {
+                    unitPrice = unitPrice * (1 - resellerDiscountPercent / 100);
+                }
+                item.price = unitPrice;
+
+                const div = document.createElement('div');
+                div.className = "bg-dark-700/60 border border-dark-600 rounded-2xl p-3.5 flex items-center justify-between gap-3";
+                div.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <h5 class="font-bold text-xs text-white truncate">${item.name}</h5>
+                        <p class="text-[11px] text-zinc-400">R$ ${unitPrice.toFixed(2).replace('.', ',')} un.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQuantity('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-dark-600 hover:bg-dark-500 text-zinc-300 flex items-center justify-center text-xs transition-colors">-</button>
+                        <span class="text-xs font-bold text-white w-5 text-center">${item.quantity}</span>
+                        <button onclick="updateQuantity('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-dark-600 hover:bg-dark-500 text-zinc-300 flex items-center justify-center text-xs transition-colors">+</button>
+                        <button onclick="removeFromCart('${item.id}')" class="text-zinc-500 hover:text-red-400 p-1 transition-colors">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        let currentCalculation = {
+            subtotal: 0,
+            discountAmount: 0,
+            resellerDiscountAmount: 0,
+            packagingCost: 0,
+            packagingName: 'Inclusa',
+            shippingCost: 0,
+            total: 0
+        };
+
+        function calculateTotal() {
+            let subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            
+            let resellerDiscAmount = 0;
+            if (isResellerMode) {
+                resellerDiscAmount = subtotal * (resellerDiscountPercent / 100);
+            }
+
+            let afterReseller = subtotal - resellerDiscAmount;
+
+            let discountInput = parseFloat(document.getElementById('discountValue').value) || 0;
+            let discountType = document.getElementById('discountType').value;
+            let discountAmount = 0;
+
+            if (discountType === 'percent') {
+                discountAmount = afterReseller * (discountInput / 100);
+            } else {
+                discountAmount = discountInput;
+            }
+            if (discountAmount > afterReseller) discountAmount = afterReseller;
+
+            let packagingSelect = document.getElementById('packagingSelect');
+            let packagingCost = parseFloat(packagingSelect.value) || 0;
+            let packagingName = 'Inclusa';
+            if (packagingSelect.selectedIndex > 0) {
+                let selectedOpt = packagingSelect.options[packagingSelect.selectedIndex];
+                packagingName = selectedOpt.getAttribute('data-name') || 'Embalagem';
+            }
+
+            let shippingCost = parseFloat(document.getElementById('shippingValue').value) || 0;
+
+            let total = afterReseller - discountAmount + packagingCost + shippingCost;
+            if (total < 0) total = 0;
+
+            currentCalculation = {
+                subtotal,
+                discountAmount,
+                resellerDiscountAmount: resellerDiscAmount,
+                packagingCost,
+                packagingName,
+                shippingCost,
+                total
+            };
+
+            document.getElementById('subtotalDisplay').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            
+            const discRow = document.getElementById('discountRow');
+            if (discountAmount > 0) {
+                discRow.classList.remove('hidden');
+                document.getElementById('discountDisplayRue')?.remove();
+                document.getElementById('discountDisplay').textContent = `- R$ ${discountAmount.toFixed(2).replace('.', ',')}`;
+            } else {
+                discRow.classList.add('hidden');
+            }
+
+            const resellerRow = document.getElementById('resellerDiscountRow');
+            if (isResellerMode && resellerDiscAmount > 0) {
+                resellerRow.classList.remove('hidden');
+                document.getElementById('resellerPercentLabel').textContent = resellerDiscountPercent;
+                document.getElementById('resellerDiscountDisplay').textContent = `- R$ ${resellerDiscAmount.toFixed(2).replace('.', ',')}`;
+            } else {
+                resellerRow.classList.add('hidden');
+            }
+
+            document.getElementById('packagingDisplay').textContent = packagingCost > 0 ? `R$ ${packagingCost.toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            document.getElementById('shippingDisplay').textContent = `R$ ${shippingCost.toFixed(2).replace('.', ',')}`;
+            document.getElementById('totalDisplay').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        function downloadPDFQuote() {
+            if (cart.length === 0) {
+                alert('Adicione pelo menos um produto ao orçamento antes de baixar o PDF.');
+                return;
+            }
+
+            const clientName = document.getElementById('clientNameInput').value.trim() || 'Consumidor Final';
+            document.getElementById('pdfClientRow').textContent = clientName;
+            
+            const modalityEl = document.getElementById('pdfModalityRow');
+            if (isResellerMode) {
+                modalityEl.textContent = `Modo Revenda Aplicado (-${resellerDiscountPercent}%)`;
+            } else {
+                modalityEl.textContent = 'Consumidor Final';
+            }
+
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('pt-BR');
+            document.getElementById('pdfDateRow').textContent = dateStr;
+
+            const randomDocNum = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('pdfDocNumber').textContent = `Nº ${randomDocNum}`;
+
+            const tbody = document.getElementById('pdfProductsBody');
+            tbody.innerHTML = '';
+
+            cart.forEach((item, index) => {
+                let rowBg = index % 2 === 0 ? '#ffffff' : '#f9f9fb';
+                const tr = document.createElement('tr');
+                tr.style.background = rowBg;
+                tr.innerHTML = `
+                    <td style="text-align: center; padding: 8px 6px; border-bottom: 1px solid #eee; font-weight: 700;">${item.quantity}</td>
+                    <td style="text-align: left; padding: 8px 6px; border-bottom: 1px solid #eee; font-weight: 700;">${item.name}</td>
+                    <td style="text-align: left; padding: 8px 6px; border-bottom: 1px solid #eee; color: #666; font-size: 10px;">Mat: ${item.material || 'PETG'} | Dim: ${item.dimensions || '-'}</td>
+                    <td style="text-align: right; padding: 8px 6px; border-bottom: 1px solid #eee;">R$ ${item.price.toFixed(2).replace('.', ',')}</td>
+                    <td style="text-align: right; padding: 8px 6px; border-bottom: 1px solid #eee; font-weight: 700;">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('pdfSubtotalRow').textContent = `R$ ${currentCalculation.subtotal.toFixed(2).replace('.', ',')}`;
+
+            const pdfDiscRow = document.getElementById('pdfDiscountRow');
+            if (currentCalculation.discountAmount > 0) {
+                pdfDiscRow.style.display = 'flex';
+                document.getElementById('pdfDiscountValue').textContent = `- R$ ${currentCalculation.discountAmount.toFixed(2).replace('.', ',')}`;
+            } else {
+                pdfDiscRow.style.display = 'none';
+            }
+
+            document.getElementById('pdfPackagingRow').textContent = currentCalculation.packagingCost > 0 ? `${currentCalculation.packagingName} — R$ ${currentCalculation.packagingCost.toFixed(2).replace('.', ',')}` : 'Inclusa';
+            document.getElementById('pdfShippingRow').textContent = `R$ ${currentCalculation.shippingCost.toFixed(2).replace('.', ',')}`;
+            document.getElementById('pdfTotalValue').textContent = `R$ ${currentCalculation.total.toFixed(2).replace('.', ',')}`;
+
+            const template = document.getElementById('pdfTemplate');
+            template.parentElement.style.display = 'block';
+
+            const opt = {
+                margin:       10,
+                filename:     `Orcamento_ASSOUND_${clientName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(template).set(opt).save().then(() => {
+                template.parentElement.style.display = 'none';
+            }).catch(err => {
+                console.error(err);
+                template.parentElement.style.display = 'none';
+                alert('Ocorreu um erro ao gerar o PDF.');
+            });
+        }
+
+        function openAdminModal() {
+            document.getElementById('settingResellerDiscount').value = resellerDiscountPercent;
+            renderAdminProductsList();
+            renderAdminPackagingList();
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function saveResellerDiscountSetting() {
+            const val = parseFloat(document.getElementById('settingResellerDiscount').value);
+            if (isNaN(val) || val < 0 || val > 100) {
+                alert('Por favor, insira uma porcentagem válida entre 0 e 100.');
+                return;
+            }
+            resellerDiscountPercent = val;
+            localStorage.setItem('alenilson_reseller_discount', resellerDiscountPercent);
+            if (isResellerMode) {
+                document.getElementById('modeText').textContent = `Modo Revenda (-${resellerDiscountPercent}%)`;
+            }
+            renderProducts();
+            calculateTotal();
+            alert('Desconto de revenda atualizado com sucesso!');
+        }
+
+        function renderAdminProductsList() {
+            const container = document.getElementById('adminProductsList');
+            container.innerHTML = '';
+
+            products.forEach(prod => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-dark-700/40 p-3.5 rounded-2xl border border-dark-600";
+                div.innerHTML = `
+                    <div class="space-y-0.5">
+                        <h5 class="font-bold text-sm text-white">${prod.name}</h5>
+                        <p class="text-xs text-zinc-400">R$ ${prod.basePrice.toFixed(2).replace('.', ',')} | Mat: ${prod.material || 'PETG'} | Dim: ${prod.dimensions || '-'}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openProductModal('${prod.id}')" class="px-2.5 py-1.5 rounded-xl bg-dark-600 hover:bg-dark-500 text-zinc-300 text-xs font-semibold transition-colors">Editar</button>
+                        <button onclick="deleteProduct('${prod.id}')" class="p-1.5 rounded-xl bg-dark-600 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function openProductModal(prodId = null) {
+            document.getElementById('editProductId').value = prodId || '';
+            if (prodId) {
+                const prod = products.find(p => p.id === prodId);
+                if (prod) {
+                    document.getElementById('prodNameInput').value = prod.name;
+                    document.getElementById('prodPriceInput').value = prod.basePrice;
+                    document.getElementById('prodMaterialInput').value = prod.material || 'PETG';
+                    document.getElementById('prodDimensionsInput').value = prod.dimensions || '';
+                }
+            } else {
+                document.getElementById('prodNameInput').value = '';
+                document.getElementById('prodPriceInput').value = '';
+                document.getElementById('prodMaterialInput').value = 'PETG';
+                document.getElementById('prodDimensionsInput').value = '';
+            }
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function saveProduct() {
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodNameInput').value.trim();
+            const basePrice = parseFloat(document.getElementById('prodPriceInput').value);
+            const material = document.getElementById('prodMaterialInput').value;
+            const dimensions = document.getElementById('prodDimensionsInput').value.trim();
+
+            if (!name || isNaN(basePrice) || basePrice < 0) {
+                alert('Preencha o nome e um preço base válido.');
+                return;
+            }
+
+            if (id) {
+                const prod = products.find(p => p.id === id);
+                if (prod) {
+                    prod.name = name;
+                    prod.basePrice = basePrice;
+                    prod.material = material;
+                    prod.dimensions = dimensions;
+                }
+            } else {
+                const newId = Date.now().toString();
+                products.push({ id: newId, name, basePrice, material, dimensions, icon: 'box' });
+            }
+
+            localStorage.setItem('alenilson_products', JSON.stringify(products));
+            closeProductModal();
+            renderProducts();
+            renderAdminProductsList();
+            calculateTotal();
+        }
+
+        function deleteProduct(prodId) {
+            if (confirm('Tem certeza que deseja excluir este modelo?')) {
+                products = products.filter(p => p.id !== prodId);
+                localStorage.setItem('alenilson_products', JSON.stringify(products));
+                cart = cart.filter(i => i.id !== prodId);
+                renderProducts();
+                renderAdminProductsList();
+                renderCart();
+                calculateTotal();
+            }
+        }
+
+        function renderAdminPackagingList() {
+            const container = document.getElementById('adminPackagingList');
+            container.innerHTML = '';
+
+            packagingOptions.forEach(pkg => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-dark-700/40 p-3.5 rounded-2xl border border-dark-600";
+                div.innerHTML = `
+                    <div class="space-y-0.5">
+                        <h5 class="font-bold text-sm text-white">${pkg.name}</h5>
+                        <p class="text-xs text-zinc-400">Custo Adicional: R$ ${pkg.cost.toFixed(2).replace('.', ',')}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openPackagingModal('${pkg.id}')" class="px-2.5 py-1.5 rounded-xl bg-dark-600 hover:bg-dark-500 text-zinc-300 text-xs font-semibold transition-colors">Editar</button>
+                        <button onclick="deletePackaging('${pkg.id}')" class="p-1.5 rounded-xl bg-dark-600 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function openPackagingModal(pkgId = null) {
+            document.getElementById('editPackagingId').value = pkgId || '';
+            if (pkgId) {
+                const pkg = packagingOptions.find(p => p.id === pkgId);
+                if (pkg) {
+                    document.getElementById('packNameInput').value = pkg.name;
+                    document.getElementById('packCostInput').value = pkg.cost;
+                }
+            } else {
+                document.getElementById('packNameInput').value = '';
+                document.getElementById('packCostInput').value = '';
+            }
+            document.getElementById('packagingModal').classList.remove('hidden');
+        }
+
+        function closePackagingModal() {
+            document.getElementById('packagingModal').classList.add('hidden');
+        }
+
+        function savePackaging() {
+            const id = document.getElementById('editPackagingId').value;
+            const name = document.getElementById('packNameInput').value.trim();
+            const cost = parseFloat(document.getElementById('packCostInput').value);
+
+            if (!name || isNaN(cost) || cost < 0) {
+                alert('Preencha o nome da embalagem e um custo válido.');
+                return;
+            }
+
+            if (id) {
+                const pkg = packagingOptions.find(p => p.id === id);
+                if (pkg) {
+                    pkg.name = name;
+                    pkg.cost = cost;
+                }
+            } else {
+                const newId = 'p_' + Date.now();
+                packagingOptions.push({ id: newId, name, cost });
+            }
+
+            localStorage.setItem('alenilson_packaging', JSON.stringify(packagingOptions));
+            closePackagingModal();
+            renderPackagingOptions();
+            calculateTotal();
+        }
+
+        function deletePackaging(pkgId) {
+            if (confirm('Tem certeza que deseja excluir esta opção de embalagem?')) {
+                packagingOptions = packagingOptions.filter(p => p.id !== pkgId);
+                localStorage.setItem('alenilson_packaging', JSON.stringify(packagingOptions));
+                renderPackagingOptions();
+                calculateTotal();
+            }
+        }
+    </script>
 </body>
 </html>
